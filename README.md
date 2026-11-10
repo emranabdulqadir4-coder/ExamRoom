@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ExamGuard
 
 ExamGuard is a Python application for camera-assisted classroom exam monitoring. It analyzes
@@ -352,6 +351,4 @@ accuracy or reliability in a real classroom or on untested hardware.
 - Keep credentials and encryption keys out of source control. Do not expose the dashboard
   directly to the internet; restrict network access and use HTTPS when accessing it over a
   network.
-=======
-# Examguard
->>>>>>> 0174eb2ba7fb8cfdb83ae06a6dab1411b245c432
+
