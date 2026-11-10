@@ -1,7 +1,6 @@
-# ExamGuard
+# ExamRoom
 
-ExamGuard is a Python application for camera-assisted classroom exam monitoring. It analyzes
-camera frames for configurable behavior cues, records short evidence clips, and presents alerts
+ExamRoom is a Python application for camera-assisted classroom exam monitoring. It can analyze the whole classroom, sending alert to the teacher when it inspects a suspicious move. It analyzes camera frames for configurable behavior cues, records short evidence clips, and presents alerts
 to a teacher for review. **An alert is not a finding of misconduct:** a teacher decides whether
 to confirm or dismiss it.
 
