@@ -1,0 +1,12 @@
+# Core (Python 3.10 - 3.12 recommended)
+numpy>=1.26
+opencv-python>=4.9
+mediapipe>=0.10.14
+flask>=3.0
+cryptography>=42.0
+requests>=2.31
+imageio>=2.34
+imageio-ffmpeg>=0.5
+
+# Tests
+pytest>=8.0

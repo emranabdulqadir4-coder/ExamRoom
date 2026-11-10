@@ -1,0 +1,3 @@
+# Phone / object detection (YOLO). Large download because it pulls in PyTorch.
+# Skip this file and start with --no-phone if you only want head-turn detection.
+ultralytics>=8.3

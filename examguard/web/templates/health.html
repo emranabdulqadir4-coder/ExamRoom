@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System check · {{ room }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span> ExamGuard <span class="room">{{ room }}</span></div>
+    <div class="topbar-right">
+      <a class="btn ghost small" href="{{ url_for('index') }}">Dashboard</a>
+      <a class="btn ghost small" href="{{ url_for('seatmap_page') }}">Seat map</a>
+      <span class="who">{{ reviewer }}</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head"><h2>System check</h2><span id="overall" class="chip">checking&hellip;</span></div>
+      <p class="muted small-text">Look at this before an exam. Green is fine, yellow needs a look, red will stop it working properly. It refreshes every few seconds.</p>
+      <div id="checks" class="checks"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Performance profile</h2><span id="prof-current" class="chip"></span></div>
+      <p class="muted small-text">Pick the one that matches the computer running ExamGuard. Only <strong>Laptop / PC</strong> has been tested.
+        The others are untested starting points: try them, then check speed and accuracy with the tools in the README.
+        Anything you set yourself in <code>.env</code> still wins over a profile.</p>
+      <div id="profiles" class="profiles"></div>
+      <p id="prof-msg" class="notice hidden" role="status"></p>
+      <div class="seat-actions">
+        <button id="restart" class="btn small primary hidden" type="button">Apply and restart ExamGuard</button>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='health.js') }}"></script>
+</body>
+</html>

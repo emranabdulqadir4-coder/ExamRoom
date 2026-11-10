@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+data/
+models/
+.venv/
+roster/*.xlsx
+roster/*.csv
+!roster/roster_template.csv
+roster/photos/*
+!roster/photos/README.txt
+*.backup-*

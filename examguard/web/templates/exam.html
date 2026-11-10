@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exam review · {{ room }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span> ExamGuard <span class="room">{{ room }}</span></div>
+    <div class="topbar-right">
+      <a class="btn ghost small" href="{{ url_for('index') }}">Dashboard</a>
+      <a class="btn ghost small" href="{{ url_for('seatmap_page') }}">Seat map</a>
+      <a class="btn ghost small" href="{{ url_for('health_page') }}">System check</a>
+      <span class="who">{{ reviewer }}</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head"><h2>This exam</h2><span id="exam-chip" class="chip">&hellip;</span></div>
+      <div id="exam-stats" class="stats"></div>
+      <div class="seat-actions">
+        <button id="exam-start" class="btn small" type="button">Start exam now</button>
+        <button id="exam-finish" class="btn small primary" type="button">Finish exam</button>
+      </div>
+      <p class="muted small-text">An exam starts by itself with the first alert (or press Start). <strong>Finish exam</strong> closes it and shows every alert with the reason you gave, so you can correct any you chose in a hurry. Alerts still waiting are not lost: they stay in the queue.</p>
+
+      <h3>Report something it missed</h3>
+      <p class="muted small-text">Alerts only show what ExamGuard caught. If you saw something it did not flag, record it here (rule, rough time and a short note: no names).</p>
+      <div class="row-form">
+        <label>What happened <select id="miss-kind"></select></label>
+        <label>Minutes ago <input id="miss-ago" class="narrow" type="number" min="0" max="180" value="0"></label>
+        <label>Note (optional) <input id="miss-note" class="wide" maxlength="200" placeholder="e.g. back row, far corner"></label>
+        <button id="miss-send" class="btn small" type="button">Report missed event</button>
+      </div>
+      <p id="msg" class="notice hidden" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Exam summary</h2>
+        <select id="exam-pick" aria-label="Choose an exam"></select></div>
+      <div id="sum-stats" class="stats"></div>
+      <div class="tbl-wrap"><table class="tbl" id="sum-table"></table></div>
+      <h3>Reported as missed</h3>
+      <div id="sum-missed" class="muted small-text"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>How ExamGuard did in this room</h2>
+        <a class="btn ghost small" href="/api/learning/report.csv">Download as CSV</a></div>
+      <p class="muted small-text">Built from the teachers' decisions. A dismissal is a judgement, not proof that nothing happened; alerts still waiting or ignored are left out of every percentage.</p>
+      <div class="tbl-wrap"><table class="tbl" id="rep-table"></table></div>
+      <h3>By teacher</h3>
+      <p class="muted small-text">Teachers judge differently. Compare before trusting any single rate.</p>
+      <div class="tbl-wrap"><table class="tbl" id="teach-table"></table></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Suggested setting changes</h2>
+        <button id="sug-refresh" class="btn small" type="button">Look for suggestions</button></div>
+      <p class="muted small-text">Nothing changes by itself. A suggestion needs at least <span id="min-n">20</span> decided alerts for the rule, and an approved change applies the <strong>next time ExamGuard starts</strong>. Settings you put in <code>.env</code> still win.</p>
+      <div id="sug-list"></div>
+      <div id="overrides" class="muted small-text"></div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='exam.js') }}"></script>
+</body>
+</html>

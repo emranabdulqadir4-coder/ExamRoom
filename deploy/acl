@@ -1,0 +1,15 @@
+# Who may do what. The edge box can only send; the server can only listen (and send the seat map).
+# ExamGuard also encrypts every payload with EXAMGUARD_MQTT_KEY, so these rules are a second lock.
+user edge
+topic write examguard/+/incident
+topic write examguard/+/status
+topic write examguard/+/live/+
+topic write examguard/+/snap/+
+topic read  examguard/+/seatmap
+
+user server
+topic read  examguard/+/incident
+topic read  examguard/+/status
+topic read  examguard/+/live/+
+topic read  examguard/+/snap/+
+topic write examguard/+/seatmap

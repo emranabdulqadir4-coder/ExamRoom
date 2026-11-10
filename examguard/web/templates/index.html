@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ExamGuard · {{ room }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span> ExamGuard <span class="room">{{ room }}</span></div>
+    <div class="topbar-right">
+      <span id="conn" class="pill off" title="Real-time alert connection"><i></i><span>Connecting</span></span>
+      <a class="btn ghost small" href="{{ url_for('exam_page') }}">Exam review</a>
+      <a class="btn ghost small" href="{{ url_for('seatmap_page') }}">Seat map</a>
+      <a class="btn ghost small" href="{{ url_for('health_page') }}">System check</a>
+      <button id="notify-btn" class="btn ghost small" type="button">Enable sound &amp; desktop alerts</button>
+      <span class="who">{{ reviewer }}</span>
+      <a class="btn ghost small" href="{{ url_for('logout') }}">Sign out</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel live">
+      <div class="panel-head">
+        <h2>Live room</h2>
+        {% if cameras|length > 1 %}<div class="cam-switch" id="cam-switch">
+          {% for c in cameras %}<button class="btn small cam-tab{% if loop.first %} active{% endif %}" data-cam="{{ loop.index0 }}" type="button">{{ c }}</button>{% endfor %}
+        </div>{% endif %}
+        <div class="chips">
+          {% if demo %}<span class="chip demo">DEMO &middot; simulated</span>{% endif %}
+          <span class="chip" id="chip-state">&hellip;</span>
+          <span class="chip" id="chip-fps">&ndash; fps</span>
+          <span class="chip" id="chip-students">&ndash; students</span>
+          <span class="chip" id="chip-phone">phone detector</span>
+          <span class="chip" id="chip-hands">hand detector</span>
+        </div>
+      </div>
+      <div class="feed"><img id="feed" src="{{ url_for('video_feed') }}" alt="Live annotated video of the exam room"></div>
+      <p class="notice"><strong>Human-in-the-loop:</strong> the system only flags possible behaviour. Nothing is recorded as an infraction until a teacher reviews the clip and confirms it.
+        Students were informed that computer-assisted monitoring is in use.</p>
+      <p id="health" class="notice warn hidden" role="status"></p>
+      {% if demo %}
+      <div class="demo-controls">
+        <span class="muted">Simulate:</span>
+        <button class="btn small" data-demo="head_turn" type="button">Head turn</button>
+        <button class="btn small" data-demo="glancing" type="button">Repeated glancing</button>
+        <button class="btn small" data-demo="phone" type="button">Phone</button>
+        <button class="btn small" data-demo="look_down" type="button">Looking down</button>
+        <button class="btn small" data-demo="eye_gaze" type="button">Eye glance</button>
+        <button class="btn small" data-demo="talking" type="button">Talking</button>
+        <button class="btn small" data-demo="passing" type="button">Passing a note</button>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="panel queue">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="pending" role="tab" type="button">Needs review <b id="count-pending">0</b></button>
+        <button class="tab" data-tab="history" role="tab" type="button">History</button>
+        <button class="tab" data-tab="audit" role="tab" type="button">Audit trail</button>
+      </div>
+      <div id="list" class="list" aria-live="polite"></div>
+      <div class="queue-foot">
+        <a class="btn ghost small" href="{{ url_for('api_export') }}">Export confirmed incidents (CSV)</a>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="modal">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h3 id="m-title"></h3>
+        <button id="m-close" class="btn ghost small" type="button" aria-label="Close">Close</button>
+      </div>
+      <video id="m-video" controls muted loop playsinline></video>
+      <p id="m-no-clip" class="muted hidden">The evidence clip is not available (it was deleted under the retention policy or could not be recorded).</p>
+      <div id="m-identity" class="identity hidden">
+        <img id="m-roster-photo" class="roster-photo" alt="Roster photo of the suggested student">
+        <div class="identity-main">
+          <div id="m-id-note" class="muted small-text"></div>
+          <label class="note">Who is this student?
+            <select id="m-student"></select>
+          </label>
+          <span class="muted small-text">Compare the roster photo with the video. Correct the name if it is wrong.</span>
+        </div>
+      </div>
+      <dl class="facts">
+        <dt>Rule</dt><dd id="m-rule"></dd>
+        <dt>Detail</dt><dd id="m-details"></dd>
+        <dt>When</dt><dd id="m-when"></dd>
+        <dt>Status</dt><dd id="m-status"></dd>
+      </dl>
+      <p class="muted small-text">Watch the clip before deciding. Normal behaviour (stretching, looking up to think, glancing at the clock) should be dismissed.</p>
+      <label class="note">Note (optional)
+        <textarea id="m-note" maxlength="500" rows="2" placeholder="e.g. Student was looking at the clock"></textarea>
+      </label>
+      <p id="m-error" class="form-error hidden" role="alert"></p>
+      <div id="m-reasons" class="reasons hidden">
+        <div class="muted small-text">Why is it a false alarm? One tap dismisses it. This helps ExamGuard learn where it is wrong; it is never used to punish anyone.</div>
+        <div id="m-reason-chips" class="reason-chips"></div>
+      </div>
+      <div class="actions">
+        <button id="m-ignore" class="btn ghost" type="button" title="Not deciding now: it stays in the queue, and is never counted as a false alarm">Ignore for now</button>
+        <button id="m-dismiss" class="btn" type="button">Dismiss &ndash; false alarm</button>
+        <button id="m-confirm" class="btn danger" type="button">Confirm incident</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

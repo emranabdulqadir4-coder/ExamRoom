@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seat map · {{ room }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span> ExamGuard <span class="room">{{ room }}</span></div>
+    <div class="topbar-right">
+      <a class="btn ghost small" href="{{ url_for('index') }}">Dashboard</a>
+      <a class="btn ghost small" href="{{ url_for('health_page') }}">System check</a>
+      <span class="who">{{ reviewer }}</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Seat map</h2>
+        <div class="chips" id="cam-tabs">
+          {% for c in cameras %}<button class="btn small cam-tab{% if loop.first %} active{% endif %}" data-cam="{{ loop.index0 }}" type="button">{{ c }}</button>{% endfor %}
+        </div>
+      </div>
+      <p class="notice">Mark each seat once so alerts say <strong>where</strong> the student sits, and a seat can suggest a name when face matching is unsure.
+        Click on the picture to add a seat, drag a mark to move it, or press <strong>Fill from faces</strong> to place one mark on every visible face.
+        The seat is only a <strong>suggestion</strong>: the teacher still checks the video before confirming.</p>
+      <div class="seat-layout">
+        <div>
+          <div class="seat-stage" id="stage"><img id="pic" alt="Picture from the camera" draggable="false"></div>
+          <div class="seat-actions">
+            <button id="refresh" class="btn small" type="button">Refresh picture</button>
+            <button id="fill" class="btn small" type="button">Fill from faces</button>
+            <button id="clear" class="btn small ghost" type="button">Remove all seats on this camera</button>
+            <button id="save" class="btn small primary" type="button">Save seat map</button>
+            <span id="msg" class="muted small-text" role="status"></span>
+          </div>
+        </div>
+        <div>
+          <div class="seat-list" id="seat-list"></div>
+          <p class="muted small-text" id="seat-hint"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='seatmap.js') }}"></script>
+</body>
+</html>
